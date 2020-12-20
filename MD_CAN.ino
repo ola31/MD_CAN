@@ -139,12 +139,12 @@ char joint_state_header_frame_id[30];
 * Publisher
 *******************************************************************************/
 // Bumpers, cliffs, buttons, encoders, battery of Turtlebot3
-turtlebot3_msgs::SensorState sensor_state_msg;
-ros::Publisher sensor_state_pub("sensor_state", &sensor_state_msg);
+//(ola)turtlebot3_msgs::SensorState sensor_state_msg;
+//(ola)ros::Publisher sensor_state_pub("sensor_state", &sensor_state_msg);
 
 // Version information of Turtlebot3
-turtlebot3_msgs::VersionInfo version_info_msg;
-ros::Publisher version_info_pub("firmware_version", &version_info_msg);
+//(ola)turtlebot3_msgs::VersionInfo version_info_msg;
+//(ola)ros::Publisher version_info_pub("firmware_version", &version_info_msg);
 
 // IMU of Turtlebot3
 sensor_msgs::Imu imu_msg;
@@ -469,8 +469,8 @@ void setup()
 
   //nh.advertise(pub);//추가
 
-  nh.advertise(sensor_state_pub);  
-  nh.advertise(version_info_pub);
+//(ola)  nh.advertise(sensor_state_pub);  
+//(ola)  nh.advertise(version_info_pub);
   nh.advertise(imu_pub);
   nh.advertise(cmd_vel_rc100_pub);
   nh.advertise(odom_pub);
@@ -638,7 +638,7 @@ void publishVersionInfoMsg(void)
   version_info_msg.software = "0.0.0";
   version_info_msg.firmware = FIRMWARE_VER;
 
-  version_info_pub.publish(&version_info_msg);
+//(ola)  version_info_pub.publish(&version_info_msg);
 }
 
 /*******************************************************************************
