@@ -44,14 +44,14 @@ uint8_t* CAN_read(uint8_t R_PID)
 {
   //R_PID : 값을읽어오고자하는 MD_450T의 PID(파라미터 id)
 
-  bool interupt_on=false;
+  interupt_on=false;
    
-  uint8_t CAN_recieved[8]={0,0,0,0,0,0,0,0};
+  //uint8_t CAN_recieved[8]={0,0,0,0,0,0,0,0};
   uint8_t arr_[8]={PID_REQ_PID_DATA,R_PID,0,0,0,0,0,0};
   
   CanBus.attachRxInterrupt(canRxHandlerTemplate); //리턴메시지를 수신할 때까지 계속 검사한다.
   interupt_on=true;
-  CAN_wirte(arr_);
+  CAN_write(arr_);
 
   if(!interupt_on){
     
@@ -63,6 +63,7 @@ uint8_t* CAN_read(uint8_t R_PID)
 
 void canRxHandlerTemplate(can_message_t *arg)
 {
+  int i=0;
   if(CanBus.readMessage(&rx_msg)){
     
       for(i=0;i<8;i++)
@@ -70,8 +71,8 @@ void canRxHandlerTemplate(can_message_t *arg)
         CAN_recieved[i]=rx_msg.data[i];
       }     
     
-      detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 종료한다.
-      interupt_in=false;
+      CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 종료한다.
+      interupt_on=false;
   }
         
 }

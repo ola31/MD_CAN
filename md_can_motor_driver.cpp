@@ -1,5 +1,62 @@
 #include "md_can_motor_driver.h"
 
+//init(),close(), read encoder제외하고 완료
+
+
+DrokMdMotorDriver::DrokMdMotorDriver()
+: //baudrate_(BAUDRATE),
+  //protocol_version_(PROTOCOL_VERSION),
+  //left_wheel_id_(DXL_LEFT_ID),
+  //right_wheel_id_(DXL_RIGHT_ID)
+{
+  torque_ = false;
+  //dynamixel_limit_max_velocity_ = BURGER_DXL_LIMIT_MAX_VELOCITY;
+}
+
+DrokMdMotorDriver::~DrokMdMotorDriver()
+{
+  close();
+}
+
+/***************************************************
+ * 모터토크 on/off함수
+ * 다이나믹셀은 토크on/off가 있지만 MD로봇에서 토크on이 의미없음
+ ***************************************************/
+bool DrokMdMotorDriver::setTorque(bool onoff)
+{
+  uint8_t dxl_error = 0;
+  int dxl_comm_result = COMM_TX_FAIL;
+
+  torque_ = onoff;
+
+  if(!onoff){
+    CAN_write(TQ_OFF);
+  }
+  //else : MD로봇은 토크 on/off가 따로 없음(터틀봇코드 형식에 맞추기 위한 함수)
+
+  return true;
+}
+
+bool DrokMdMotorDriver::getTorque()//(터틀봇코드 형식에 맞추기 위한 함수)
+{
+  return torque_;
+}
+
+
+void Turtlebot3MotorDriver::close(void)  //토크 off 외에 특별한 기능 없음
+{
+  // Disable Dynamixel Torque
+  setTorque(false);
+
+  // Close port
+  //portHandler_->closePort();
+  //DEBUG_SERIAL.end();
+}
+
+
+/*********************************
+ * 엔코더값을읽음(bradcasting되는데이터를읽기만할건지, 직접 읽어오기 할건지는 미정
+ *********************************/
 bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
 {
   int dxl_comm_result = COMM_TX_FAIL;              // Communication result
@@ -40,6 +97,9 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   return true;
 }
 
+/************************************************************
+ * 입력한 RPM에 따라 모터를 구동하는 함수
+ ***********************************************************/
 bool DrokMdMotorDriver::writeVelocity(int16_t L_RPM, int16_t R_RPM)
 {
   
@@ -66,6 +126,10 @@ bool DrokMdMotorDriver::writeVelocity(int16_t L_RPM, int16_t R_RPM)
   return true;
 }
 
+/*****************************************************************************
+ * value(cmd_vel)값을 받아서 RPM값으로 변환하고 writeVelocity 함수를 실행
+ * 실제 사용하는 모터구동함수
+ ****************************************************************************/
 bool DrokMdMotorDriver::controlMotor(const float wheel_radius, const float wheel_separation, float* value)
 {
   bool dxl_comm_result = false;

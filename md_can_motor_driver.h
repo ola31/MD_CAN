@@ -4,6 +4,9 @@
 
 #include "CAN_driver.h"
 
+#define GEAR_RATIO 30
+#define PID_PNT_VEL_CMD 207
+
 class DrokMdMotorDriver
 {
  public:
@@ -14,7 +17,7 @@ class DrokMdMotorDriver
   bool setTorque(bool onoff);
   bool getTorque();
   bool readEncoder(int32_t &left_value, int32_t &right_value);
-  bool writeVelocity(int64_t left_value, int64_t right_value);
+  bool writeVelocity(int16_t L_RPM, int16_t R_RPM);
   bool controlMotor(const float wheel_radius, const float wheel_separation, float* value);
 
  private:
@@ -24,17 +27,15 @@ class DrokMdMotorDriver
   //uint8_t right_wheel_id_;
   bool torque_;
 
+  uint8_t TQ_OFF[8]={5,0,0,0,0,0,0,0};  //자연정지 PID_TQ_OFF(5번) ,private??
+
   uint16_t dynamixel_limit_max_velocity_;
 
-  //dynamixel::PortHandler *portHandler_;
-  //dynamixel::PacketHandler *packetHandler_;
-
-  //dynamixel::GroupSyncWrite *groupSyncWriteVelocity_;
-  //dynamixel::GroupSyncRead *groupSyncReadEncoder_;
 };
 
 #define GEAR_RATIO 30
 #define PID_PNT_VEL_CMD 207
+
 //=========================================================================================================
 //=========================================================================================================
 //=========================================================================================================
