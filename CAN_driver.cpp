@@ -1,5 +1,14 @@
 #include "CAN_driver.h"
 
+/***********************************/
+/*.h파일에서 선언하면 중복정의로 에러발생*/
+uint32_t id;
+can_message_t tx_msg, rx_msg;
+bool interupt_on;
+uint8_t CAN_recieve_arr[8];
+uint8_t CAN_read_arr[8];
+/***********************************/
+
 
 /***************************************
  * CAN통신 시작(초기화)
@@ -36,6 +45,26 @@ void CAN_write(uint8_t* Arr)
     
 }
 
+/*************************************************
+ * MD450T제어기에서 보내는 CAN데이터를 수신하는 함수
+ ************************************************/
+void CAN_recieve(void) 
+{
+
+    int i=0;
+    if(CanBus.readMessage(&rx_msg)){
+    
+      for(i=0;i<8;i++)
+      {
+        CAN_recieve_arr[i]=rx_msg.data[i];
+      }     
+    
+      CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 종료한다.
+      interupt_on=false;
+    }
+    
+}
+
 /**********************************************
  * R_PID값을 읽어오는 함수
  *********************************************/
@@ -55,7 +84,7 @@ uint8_t* CAN_read(uint8_t R_PID)
 
   if(!interupt_on){
     
-    return CAN_recieved;
+    return CAN_read_arr;
   }
   
 }
@@ -68,11 +97,29 @@ void canRxHandlerTemplate(can_message_t *arg)
     
       for(i=0;i<8;i++)
       {
-        CAN_recieved[i]=rx_msg.data[i];
+        CAN_read_arr[i]=rx_msg.data[i];
       }     
     
       CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 종료한다.
       interupt_on=false;
   }
         
+}
+/**********************************************************
+ * 2바이트정수를 1바이트의 Low_byte, High_byte정수로 나눠주는 함수
+ **********************************************************/
+data Int2LHByte(int16_t nIn)
+{
+  data d1;
+  d1.low = nIn & 0xff;
+  d1.high = nIn>>8 & 0xff;
+  return d1;
+}
+
+/*******************************************************
+ * 1바이트 low,high 데이터를 받아 원 데이터인 2바이트 정수를 만듬
+ ******************************************************/
+int16_t LHByte2Int16(int8_t low, int8_t high)
+{
+  return (low | (int16_t)high<<8);
 }

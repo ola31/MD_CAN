@@ -43,7 +43,7 @@ bool DrokMdMotorDriver::getTorque()//(터틀봇코드 형식에 맞추기 위한
 }
 
 
-void Turtlebot3MotorDriver::close(void)  //토크 off 외에 특별한 기능 없음
+void DrokMdMotorDriver::close(void)  //토크 off 외에 특별한 기능 없음
 {
   // Disable Dynamixel Torque
   setTorque(false);

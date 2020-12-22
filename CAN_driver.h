@@ -3,8 +3,8 @@
 
 #include <CAN.h>
 
-uint32_t id;
-can_message_t tx_msg, rx_msg;
+//uint32_t id;
+//can_message_t tx_msg, rx_msg;
 /*
  *  typedef struct 
  *  {
@@ -27,14 +27,22 @@ can_message_t tx_msg, rx_msg;
 
 #define PID_REQ_PID_DATA 4
 
+typedef struct Can_data{
+
+  uint8_t low;
+  uint8_t high;
+}data;
+
 void CAN_initialize(void);
 void CAN_write(uint8_t* Arr);
+void CAN_recieve(void);
 uint8_t* CAN_read(uint8_t R_PID);
 void canRxHandlerTemplate(can_message_t *arg);
-uint8_t CAN_recieved[8]={0,0,0,0,0,0,0,0};
-bool interupt_on;
+//uint8_t CAN_recieved[8];//={0,0,0,0,0,0,0,0};
+//bool interupt_on;
 
-
+data Int2LHByte(int16_t nln);
+int16_t LHByte2Int16(int8_t low, int8_t high);
 
 
 
