@@ -6,6 +6,8 @@
 
 #define GEAR_RATIO 30
 #define PID_PNT_VEL_CMD 207
+#define PID_MONITOR 196  //모터 1의 모니터데이터(위치정보:D4,5,6,7)
+#define PID_MONITOR2 201 //모터 2의 모니터데이터
 
 class DrokMdMotorDriver
 {

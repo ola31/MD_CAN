@@ -398,7 +398,7 @@ void CAN_Until_8(uint8_t* Arr)  //MD로봇은 세미콜론 없이 항상 8개씩
 void cmd_vel2RPM(float linear_vel, float angular_vel)
 {
   
-  //오른쪽 모터 : 1번모터(D2,D3) ,왼쪽모터 2번 모터(D5,D6)
+  //오른쪽 모터 : 1번모터(D2,D3) ,왼쪽모터 2번 모터(D5,D6) ->확인필요
   
   R_RPM = (int16_t)(gear_ratio*30.0*((2*linear_vel) + (distance*angular_vel))/(2*wheel_radius*3.141593));
   L_RPM = -1*(int16_t)(gear_ratio*30.0*((2*linear_vel) - (distance*angular_vel))/(2*wheel_radius*3.141593));
