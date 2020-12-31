@@ -33,6 +33,14 @@ typedef struct Can_data{
   uint8_t high;
 }data;
 
+typedef struct Enc_data{
+
+  uint8_t D4;
+  uint8_t D5;
+  uint8_t D6;
+  uint8_t D7;
+}e_data;
+
 void CAN_initialize(void);
 void CAN_write(uint8_t* Arr);
 void CAN_recieve(void);
@@ -42,8 +50,8 @@ void canRxHandlerTemplate(can_message_t *arg);
 //bool interupt_on;
 
 data Int2LHByte(int16_t nln);
-int16_t LHByte2Int16(int8_t low, int8_t high);
-
+int16_t LHByte2Int16(uint8_t low, uint8_t high);
+int32_t Byte2Int32(uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
 
 
 #endif  //CAN_DRIVER_H_
