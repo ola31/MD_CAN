@@ -85,6 +85,12 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   if (dxl_getdata_result != true)
     return false;
 
+  uint8_t* r_data=read(PID_MONITOR);
+  uint8_t* l_data=read(PID_MONITOR2);
+  
+  int32_t right_counting = Byte2Int32(r_data[4], r_data[5], r_data[6], r_data[7]);
+  int32_t left_counting  = Byte2Int32(l_data[4], l_data[5], l_data[6], l_data[7]);
+
   dxl_getdata_result = groupSyncReadEncoder_->isAvailable(right_wheel_id_, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
   if (dxl_getdata_result != true)
     return false;
