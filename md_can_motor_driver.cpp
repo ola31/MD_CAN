@@ -4,7 +4,7 @@
 
 
 DrokMdMotorDriver::DrokMdMotorDriver()
-: //baudrate_(BAUDRATE),
+//: //baudrate_(BAUDRATE),
   //protocol_version_(PROTOCOL_VERSION),
   //left_wheel_id_(DXL_LEFT_ID),
   //right_wheel_id_(DXL_RIGHT_ID)
@@ -12,6 +12,57 @@ DrokMdMotorDriver::DrokMdMotorDriver()
   torque_ = false;
   //dynamixel_limit_max_velocity_ = BURGER_DXL_LIMIT_MAX_VELOCITY;
 }
+
+
+
+bool DrokMdMotorDriver::init(String turtlebot3)
+{
+
+  uint8_t* test_CAN_comm = NULL;
+  test_CAN_comm = CAN_read(PID_VER);      //PID 1을 읽어오는명령으로 CAN 통신을 테스트
+  
+  if(test_CAN_comm[1]>0){
+      DEBUG_SERIAL.println("Success to CAN_comm");
+  }
+  else{
+      DEBUG_SERIAL.println("Failed to CAN_comm");
+      return false;
+  }
+  /*DEBUG_SERIAL.begin(57600);
+  portHandler_   = dynamixel::PortHandler::getPortHandler(DEVICENAME);
+  packetHandler_ = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+
+  // Open port
+  if (portHandler_->openPort() == false)
+  {
+    DEBUG_SERIAL.println("Failed to open port(Motor Driver)");
+    return false;
+  }
+
+  // Set port baudrate
+  if (portHandler_->setBaudRate(baudrate_) == false)
+  {
+    DEBUG_SERIAL.println("Failed to set baud rate(Motor Driver)");
+    return false;
+  }
+
+  // Enable Dynamixel Torque
+  setTorque(true);
+
+  groupSyncWriteVelocity_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_X_GOAL_VELOCITY, LEN_X_GOAL_VELOCITY);
+  groupSyncReadEncoder_   = new dynamixel::GroupSyncRead(portHandler_, packetHandler_, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
+  
+  if (turtlebot3 == "Burger")
+    dynamixel_limit_max_velocity_ = BURGER_DXL_LIMIT_MAX_VELOCITY;
+  else if (turtlebot3 == "Waffle or Waffle Pi")
+    dynamixel_limit_max_velocity_ = WAFFLE_DXL_LIMIT_MAX_VELOCITY;
+  else
+    dynamixel_limit_max_velocity_ = BURGER_DXL_LIMIT_MAX_VELOCITY;
+
+  DEBUG_SERIAL.println("Success to init Motor Driver");*/
+  return true;
+}
+
 
 DrokMdMotorDriver::~DrokMdMotorDriver()
 {
@@ -30,7 +81,7 @@ bool DrokMdMotorDriver::setTorque(bool onoff)
   torque_ = onoff;
 
   if(!onoff){
-    CAN_write(TQ_OFF);
+    CAN_write(TQ_OFF);   //TQ_OFF : 모터를 자연정지시킴
   }
   //else : MD로봇은 토크 on/off가 따로 없음(터틀봇코드 형식에 맞추기 위한 함수)
 
@@ -59,13 +110,21 @@ void DrokMdMotorDriver::close(void)  //토크 off 외에 특별한 기능 없음
  *********************************/
 bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
 {
-  int dxl_comm_result = COMM_TX_FAIL;              // Communication result
+  /*int dxl_comm_result = COMM_TX_FAIL;              // Communication result
   bool dxl_addparam_result = false;                // addParam result
-  bool dxl_getdata_result = false;                 // GetParam result
+  bool dxl_getdata_result = false;                 // GetParam result*/
 
-
-  int left=
+  int32_t r_enc;
+  int32_t l_enc;
+  uint8_t* read_arr = NULL;
   
+  read_arr = CAN_read(PID_MONITOR);   //오른쪽모터 = 1번모터일경우
+  r_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
+  
+  read_arr = CAN_read(PID_MONITOR2);  //왼쪽모터 = 2번모터일경우
+  l_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
+
+  /*
   // Set parameter
   dxl_addparam_result = groupSyncReadEncoder_->addParam(left_wheel_id_);
   if (dxl_addparam_result != true)
@@ -99,7 +158,7 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   left_value  = groupSyncReadEncoder_->getData(left_wheel_id_,  ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
   right_value = groupSyncReadEncoder_->getData(right_wheel_id_, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
 
-  groupSyncReadEncoder_->clearParam();
+  groupSyncReadEncoder_->clearParam();*/
   return true;
 }
 
@@ -140,8 +199,8 @@ bool DrokMdMotorDriver::controlMotor(const float wheel_radius, const float wheel
 {
   bool dxl_comm_result = false;
 
-  float lin_vel = value[LEFT];
-  float ang_vel = value[RIGHT];
+  float lin_vel = value[LINEAR];  
+  float ang_vel = value[ANGULAR]; 
 
   int16_t R_wheel_RPM=0,L_wheel_RPM=0;
 
@@ -155,7 +214,7 @@ bool DrokMdMotorDriver::controlMotor(const float wheel_radius, const float wheel
 
   return true;
 }
-
+/*
 //=====================================================================================
 //=====================================================================================
 //=====================================================================================
@@ -356,4 +415,4 @@ bool Turtlebot3MotorDriver::controlMotor(const float wheel_radius, const float w
     return false;
 
   return true;
-}
+}*/

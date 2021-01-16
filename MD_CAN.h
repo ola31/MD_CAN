@@ -6,9 +6,9 @@
 #define USE_USBCON
 #define SEND_INTERVAL_MS 1000
 
-//#define distance 0.4       //바퀴 사이 간격
-//#define wheel_radius 0.08  //바퀴 반지름
-//#define gear_ratio 1       //원래 기어비 : 30
+
+#define WHEEL_RADIUS                     0.033           // meter
+#define WHEEL_SEPARATION                 0.160           // meter (BURGER : 0.160, WAFFLE : 0.287)
 
 #include <ros.h>
 #include <ros/time.h>
@@ -26,8 +26,8 @@
 #include <nav_msgs/Odometry.h>
 
 #include <turtlebot3_msgs/SensorState.h>
-#include <turtlebot3_msgs/Sound.h>
-#include <turtlebot3_msgs/VersionInfo.h>
+//#include <turtlebot3_msgs/Sound.h>
+//#include <turtlebot3_msgs/VersionInfo.h>
 
 
 #include "md_can_motor_driver.h"
@@ -36,9 +36,9 @@
 #include <math.h>
 
 
-#define CONTROL_MOTOR_SPEED_FREQUENCY          30   //hz
+#define CONTROL_MOTOR_SPEED_FREQUENCY          30   //hz   //33 msec??
 #define CONTROL_MOTOR_TIMEOUT                  500  //ms
-#define IMU_PUBLISH_FREQUENCY                  200  //hz
+#define IMU_PUBLISH_FREQUENCY                  200  //hz   //5  msec??
 #define CMD_VEL_PUBLISH_FREQUENCY              30   //hz
 #define DRIVE_INFORMATION_PUBLISH_FREQUENCY    30   //hz
 #define VERSION_INFORMATION_PUBLISH_FREQUENCY  1    //hz 

@@ -133,5 +133,5 @@ int16_t LHByte2Int16(uint8_t low, uint8_t high)
  ***********************************************************/
 int32_t Byte2Int32(uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
 {
-  return (int32_t)d4 | (int32_t)d5<<8 | (int32_t)d6<<16 | (int32_t)d7<<32);
+  return ((int32_t)d4 | (int32_t)d5<<8 | (int32_t)d6<<16 | (int32_t)d7<<32);
 }
