@@ -79,14 +79,14 @@ uint8_t* CAN_read(uint8_t R_PID)
   //uint8_t CAN_recieved[8]={0,0,0,0,0,0,0,0};
   uint8_t arr_[8]={PID_REQ_PID_DATA,R_PID,0,0,0,0,0,0};
   
-  CanBus.attachRxInterrupt(canRxHandlerTemplate);       //리턴메시지를 수신할 때까지 계속 검사한다.
+  CanBus.attachRxInterrupt(canRxHandlerTemplate);       //CAN rx신호를 인터럽트 신호로 등록한다. 
   interupt_on=true;
   CAN_write(arr_);
 
-  if(!interupt_on){
-    
-    return CAN_read_arr;
-  }
+ // while(interupt_on){                //interupt_on == true라면 아직까지 CAN_read_arr가 업데이트 되지 못한 것.
+    //Serial.println("CAN_reading");
+  //}
+  return CAN_read_arr;
   
 }
 
@@ -95,16 +95,20 @@ void canRxHandlerTemplate(can_message_t *arg)
 {
   int i=0;
   if(CanBus.readMessage(&rx_msg)){
-    if(rx_msg.data[0]=R_PID_g){
+  
+    if(arg->data[0]==R_PID_g){ 
     
         for(i=0;i<8;i++)
         {
-          CAN_read_arr[i]=rx_msg.data[i];
+          CAN_read_arr[i]=arg->data[i];
+          //Serial.println("CAN_read");
         }     
     
-        CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 종료한다.
+        CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 해제한다.
         interupt_on=false;
+        //Serial.println("CAN_read_done");
 
+       
     }
   }
         
